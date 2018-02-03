@@ -1,0 +1,322 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Bitnami
+    // Bootstrap core CSS
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+    // Data Table
+    link(rel='stylesheet', href='/dataTables/css/dataTables.bootstrap4.min.css')
+    // Custom styles for this template
+    link(href='/css/simple-sidebar.css', rel='stylesheet')
+    link(rel='stylesheet', href='/css/custom.css')
+  body
+    nav.navbar.navbar-inverse
+      .container-fluid
+        // Brand and toggle get grouped for better mobile display
+        .navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='/admin/monitor') L&F ePM System (INT,S.A.)
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+          ul.nav.navbar-nav.navbar-right
+            li.dropdown
+              a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                | Account 
+                span.caret
+              ul.dropdown-menu
+                li
+                  a.d-settings(href='javascript:void(0);') Settings
+                li
+                  a(href='/admin/logout') Log out
+      // /.container-fluid
+    #wrapper.toggled
+      // Sidebar
+      #sidebar-wrapper
+        ul.sidebar-nav
+          li
+            a(href='/admin/monitor') Received XML files
+          li
+            a(href='/admin/order') Received Orders
+      // /#sidebar-wrapper
+      // Page Content
+      #page-content-wrapper
+        div
+          a#menu-toggle(href='')
+            span.glyphicon.glyphicon-menu-hamburger.d-sidebar-toggler
+        .container          
+          .d-page-content            
+            .text-center(style='margin-top:20px; margin-bottom:20px;')
+              h2 Order Detail
+            div
+              // Nav tabs
+              ul.nav.nav-tabs(role='tablist')
+                li.active(role='presentation')
+                  a(href='#header', aria-controls='header', role='tab', data-toggle='tab') Order Header Information 
+                li(role='presentation')
+                  a(href='#prepacks', aria-controls='prepacks', role='tab', data-toggle='tab') Pre-Pack Details
+                li(role='presentation')
+                  a(href='#items', aria-controls='messages', role='tab', data-toggle='tab') Items Details
+              // Tab panes
+              .tab-content(style='padding-top: 30px;')
+                #header.tab-pane.active(role='tabpanel')                    
+                  - for (var i = 0; i < Object.keys(detail).length; i = i+5) {
+                    table.table.table-striped.table-bordered(style='padding-top: 50px;  text-align:center;')
+                      tr
+                        th.text-center(style='width: 20%;') #{ Object.keys(detail)[i] }
+                        th.text-center(style='width: 20%;') #{ Object.keys(detail)[i+1] }
+                        th.text-center(style='width: 20%;') #{ Object.keys(detail)[i+2] }
+                        th.text-center(style='width: 20%;') #{ Object.keys(detail)[i+3] }
+                        th.text-center(style='width: 20%;') #{ Object.keys(detail)[i+4] }
+                      tr
+                        if(Object.values(detail)[i] && Object.values(detail)[i].length > 50)
+                          td 
+                            a.headerdetail(href='javascript:void(0);' data-detail='#{Object.values(detail)[i]}') #{ Object.values(detail)[i].substr(0,50)} ...
+                        else
+                          td #{Object.values(detail)[i]}
+
+                        if(Object.values(detail)[i+1] && Object.values(detail)[i+1].length > 50)
+                          td 
+                            a.headerdetail(href='javascript:void(0);' data-detail='#{Object.values(detail)[i+1]}') #{ Object.values(detail)[i+1].substr(0,50)} ...
+                        else
+                          td #{Object.values(detail)[i+1]}
+                        if(Object.values(detail)[i+2] && Object.values(detail)[i+2].length > 50)
+                          td 
+                            a.headerdetail(href='javascript:void(0);' data-detail='#{Object.values(detail)[i+2]}') #{ Object.values(detail)[i+2].substr(0,50)} ...
+                        else
+                          td #{Object.values(detail)[i+2]}
+
+                        if(Object.values(detail)[i+3] && Object.values(detail)[i+3].length > 50)
+                          td 
+                            a.headerdetail(href='javascript:void(0);' data-detail='#{Object.values(detail)[i+3]}') #{ Object.values(detail)[i+3].substr(0,50)} ...
+                        else
+                          td #{Object.values(detail)[i+3]}
+
+                        if(Object.values(detail)[i+4] && Object.values(detail)[i+4].length > 50)
+                          td 
+                            a.headerdetail(href='javascript:void(0);' data-detail='#{Object.values(detail)[i+4]}') #{ Object.values(detail)[i+4].substr(0,50)} ...
+                        else
+                          td #{Object.values(detail)[i+4]}          
+                  - }
+                #prepacks.tab-pane(role='tabpanel')
+                  .table-responsive
+                    table#prepacktable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                      thead
+                        tr
+                          th.text-center PackSeqNo
+                          th.text-center PackLineNo
+                          th.text-center PackSKU
+                          th.text-center PackEANOrUPC
+                          th.text-center PackDesc
+                          th.text-center NoOfInnerPackUnits
+                          th.text-center NoOfUnitsPerInnerPack
+                          th.text-center NoOfCartons
+                          th.text-center GWPerInnerPack
+                          th.text-center NWPerInnerPack
+                          th.text-center InnerPackWeightUOM
+                          th.text-center PackStyleNo
+                      tbody.text-center
+                        - for (var i = 0; i < prePacks.length; ++i) {
+                          tr
+                            td #{prePacks[i].PackSeqNo}
+                            td #{prePacks[i].PackLineNo}
+                            td #{prePacks[i].PackSKU}
+                            td #{prePacks[i].PackEANOrUPC}
+                            td #{prePacks[i].PackDesc}
+                            td #{prePacks[i].NoOfInnerPackUnits}
+                            td #{prePacks[i].NoOfUnitsPerInnerPack}
+                            td #{prePacks[i].NoOfCartons}
+                            td #{prePacks[i].GWPerInnerPack}
+                            td #{prePacks[i].NWPerInnerPack}
+                            td #{prePacks[i].InnerPackWeightUOM}
+                            td #{prePacks[i].PackStyleNo}
+                        - }
+                #items.tab-pane(role='tabpanel')                  
+                  .table-responsive.t-item-wrapper
+                    table#itemtable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                      thead
+                        tr
+                          th.text-center ItemSeq
+                          th.text-center ItemNo
+                          th.text-center ItemDesc
+                          th.text-center ItemQty
+                          th.text-center ItemQtyUOM
+                          th.text-center ItemBuyerOrderNo
+                          th.text-center ItemLiFungFactoryCode
+                          th.text-center ItemFactoryNameInEnglish
+                          th.text-center ItemLongDesc
+                          th.text-center ItemCountryOfOriginCode
+                          th.text-center ItemCountryOfOrigin
+                          th.text-center ItemProductionCountryCode
+                          th.text-center ItemProductionCountry
+                          th.text-center ItemEANNo
+                          th.text-center ItemHSCode
+                          th.text-center ItemHS
+                          th.text-center ItemLabel
+                          th.text-center ItemUnitPrice
+                          th.text-center ItemSupplierNo
+                          th.text-center ItemUnitPriceTotal
+                      tbody.text-center
+                        - for (var i = 0; i < items.length; ++i) {
+                          tr.item-row(data-index=i.toString(), data-pmno='#{detail.PMNo}', style='cursor: pointer;')
+                            td #{items[i].ItemSeq}
+                            td #{items[i].ItemNo}
+                            td #{items[i].ItemDesc}
+                            td #{items[i].ItemQty}
+                            td #{items[i].ItemQtyUOM}
+                            td #{items[i].ItemBuyerOrderNo}
+                            td #{items[i].ItemLiFungFactoryCode}
+                            td #{items[i].ItemFactoryNameInEnglish}
+                            td #{items[i].ItemLongDesc}
+                            td #{items[i].ItemCountryOfOriginCode}
+                            td #{items[i].ItemCountryOfOrigin}
+                            td #{items[i].ItemProductionCountryCode}
+                            td #{items[i].ItemProductionCountry}
+                            td #{items[i].ItemEANNo}
+                            td #{items[i].ItemHSCode}
+                            td #{items[i].ItemHS}
+                            td #{items[i].ItemLabel}
+                            td #{items[i].ItemUnitPrice}
+                            td #{items[i].ItemSupplierNo}
+                            td #{items[i].ItemUnitPriceTotal}
+                        - }
+                  .table-responsive.t-color-wrapper                    
+                    table#colortable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                      thead
+                        tr
+                          th.text-center No
+                          th.text-center PackSeqNo
+                          th.text-center LineNo
+                          th.text-center SKU
+                          th.text-center UPCorEAN
+                          th.text-center Color
+                          th.text-center Size
+                          th.text-center PackingRatio
+                          th.text-center Quantity
+                      tbody.text-center     
+                    a.back(style='display:block; width: 50px; margin-left:auto; padding-bottom:20px; cursor: pointer') Back
+            // Trigger the modal with a button
+            button.btn.btn-info.btn-lg.d-settingModalTrigger(type='button', data-toggle='modal', data-target='#mySettingModal', style='display:none;') Open Modal
+            #mySettingModal.modal.fade(role='dialog')
+              .modal-dialog
+                // Modal content
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal') ×
+                    h4.modal-title.text-center Setting
+                  .modal-body
+                    div
+                      .form-group
+                        label  Old Password
+                        input.form-control.d-oldPassword(type='password')
+                      .form-group
+                        label  New Password
+                        input.form-control.d-newPassword(type='password')
+                      div(style='text-align:right;')
+                        button.btn.btn-warning.btn-md.btn-Change(type='submit') Change
+
+            // Trigger the modal with a button
+            button.btn.btn-info.btn-lg.d-detailModalTrigger(type='button', data-toggle='modal', data-target='#detailModal', style='display:none;') Open Modal
+            #detailModal.modal.fade(role='dialog')
+              .modal-dialog
+                // Modal content
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal') ×
+                    h4.modal-title.text-center Detail
+                  .modal-body
+                    textarea(rows='100', style='height:500px; width: 100%;')
+                      
+      // #page-content-wrapper
+    // #wrapper
+
+    .footer
+      h4 All rights reserved. 2018
+
+    // Bootstrap core JavaScript
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+    // Bootstrap Data Table
+    script(src='/dataTables/js/jquery.dataTables.min.js')
+    script(src='/dataTables/js/dataTables.bootstrap4.min.js')
+    script.
+      $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+      });
+      $('.d-settings').on('click', function(){
+          $('.d-settingModalTrigger').trigger('click');            
+      })
+      $('.btn-Change').on('click', function(){
+        var oldPassword = $('.d-oldPassword').val();
+        var newPassword = $('.d-newPassword').val();
+        $.ajax({
+          url:"/admin/changePassword",
+          data:{oldPassword:oldPassword, newPassword:newPassword},
+          type:'POST',
+          success:function(data){
+            if(data.ret == true){
+              alert("Successfully changed");
+              $('.close').trigger('click');
+            }
+            else{
+              alert("Information incorrect");
+            }
+          }
+        })
+      })
+      $(document).ready(function(){
+        $('#prepacktable').dataTable();
+        $('#itemtable').dataTable();
+        $('#colortable').dataTable();
+        $('.t-item-wrapper').show();
+        $('.t-color-wrapper').hide();
+      })
+      
+      $('.headerdetail').on('click', function(){
+        var detail = $(this).data('detail');
+        $('#detailModal .modal-body textarea').val(detail);
+        $('.d-detailModalTrigger').trigger('click');
+      })
+
+      $('.item-row').on('click', function(){
+        var index = Number($(this).data('index'));
+        var pmno = $(this).data('pmno');
+        $.ajax({
+          url:'/admin/order/color',
+          type: 'POST',
+          data: {
+            index: index, 
+            pmno: pmno
+          },
+          success: function(data){
+            var tableData = [];
+            for(var i = 0; i < data.length; i++){
+              tableData.push([
+                i+1,
+                data[i].PackSeqNo,
+                data[i].LineNo,
+                data[i].SKU,
+                data[i].UPCorEAN,
+                data[i].Color,
+                data[i].Size,
+                data[i].PackingRatio,
+                data[i].Quantity
+              ]);
+            }            
+            $('#colortable').dataTable().fnClearTable();
+            $('#colortable').dataTable().fnAddData(tableData);
+            $('#colortable').dataTable().fnDraw();
+            $('.t-item-wrapper').hide();
+            $('.t-color-wrapper').show();
+          }
+        })
+      })
+      $('.back').on('click', function(){
+        $('.t-item-wrapper').show();
+        $('.t-color-wrapper').hide();
+      })

@@ -1,0 +1,130 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title Bitnami
+    // Bootstrap core CSS
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
+    // Data Table
+    link(rel='stylesheet', href='/dataTables/css/dataTables.bootstrap4.min.css')
+    // Custom styles for this template
+    link(href='/css/simple-sidebar.css', rel='stylesheet')
+    link(rel='stylesheet', href='/css/custom.css')
+  body
+    nav.navbar.navbar-inverse
+      .container-fluid
+        // Brand and toggle get grouped for better mobile display
+        .navbar-header
+          button.navbar-toggle.collapsed(type='button', data-toggle='collapse', data-target='#bs-example-navbar-collapse-1', aria-expanded='false')
+            span.sr-only Toggle navigation
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
+          a.navbar-brand(href='/admin/monitor') L&F ePM System (INT,S.A.)
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+          ul.nav.navbar-nav.navbar-right
+            li.dropdown
+              a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                | Account 
+                span.caret
+              ul.dropdown-menu
+                li
+                  a.d-settings(href='javascript:void(0);') Settings
+                li
+                  a(href='/admin/logout') Log out
+      // /.container-fluid
+    #wrapper.toggled
+      // Sidebar
+      #sidebar-wrapper
+        ul.sidebar-nav
+          li
+            a(href='/admin/monitor') Received XML files
+          li
+            a(href='/admin/order') Received Orders
+      // /#sidebar-wrapper
+      // Page Content
+      #page-content-wrapper
+        div
+          a#menu-toggle(href='')
+            span.glyphicon.glyphicon-menu-hamburger.d-sidebar-toggler
+        .container          
+          .d-page-content
+            .text-center(style='margin-top:20px; margin-bottom:20px;')
+              h2 Received XML files
+            .table-responsive
+              table#userTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
+                thead
+                  tr
+                    th.text-center No
+                    th.text-center File Name
+                    th.text-center Created At
+                    th.text-center Modified At
+                tbody.text-center
+                  - for (var i = 0; i < files.length; ++i) {
+                    tr
+                      td #{i+1}
+                      td #{files[i].name}
+                      td #{files[i].ctime}
+                      td #{files[i].mtime}
+                  - }
+            // Trigger the modal with a button
+            button.btn.btn-info.btn-lg.d-settingModalTrigger(type='button', data-toggle='modal', data-target='#mySettingModal', style='display:none;') Open Modal
+            #mySettingModal.modal.fade(role='dialog')
+              .modal-dialog
+                // Modal content
+                .modal-content
+                  .modal-header
+                    button.close(type='button', data-dismiss='modal') ×
+                    h4.modal-title.text-center Setting
+                  .modal-body
+                    div
+                      .form-group
+                        label  Old Password
+                        input.form-control.d-oldPassword(type='password')
+                      .form-group
+                        label  New Password
+                        input.form-control.d-newPassword(type='password')
+                      div(style='text-align:right;')
+                        button.btn.btn-warning.btn-md.btn-Change(type='submit') Change
+      // #page-content-wrapper
+    // #wrapper
+
+    .footer
+      h4 All rights reserved. 2018
+
+    // Bootstrap core JavaScript
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+    // Bootstrap Data Table
+    script(src='/dataTables/js/jquery.dataTables.min.js')
+    script(src='/dataTables/js/dataTables.bootstrap4.min.js')
+    script.
+      $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+      });
+      $(document).ready(function(){
+        $('#userTable').dataTable();
+      })
+      $('.d-settings').on('click', function(){
+          $('.d-settingModalTrigger').trigger('click');            
+      })
+      $('.btn-Change').on('click', function(){
+        var oldPassword = $('.d-oldPassword').val();
+        var newPassword = $('.d-newPassword').val();
+        $.ajax({
+          url:"/admin/changePassword",
+          data:{oldPassword:oldPassword, newPassword:newPassword},
+          type:'POST',
+          success:function(data){
+            if(data.ret == true){
+              alert("Successfully changed");
+              $('.close').trigger('click');
+            }
+            else{
+              alert("Information incorrect");
+            }
+          }
+        })
+      })

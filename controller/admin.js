@@ -1,9 +1,8 @@
 var UserModel = require('../model/user');
+var ePM_VerContent = require('../model/ePM_VerContent').ePM_VerContent;
 var bcrypt   = require('bcrypt-nodejs');
 const path = require('path');
 const fs = require('fs');
-
-
 const epm_path = path.join(require('../config/xml').path);
 
 exports.monitor = function(req, res){  
@@ -30,7 +29,7 @@ exports.monitor = function(req, res){
       	files.push(item);
       }
     }
-		res.render('index', {success: true, files: files});
+		res.render('monitor', {success: true, files: files});
 	});
 }
 
@@ -56,3 +55,37 @@ exports.changePassword = function(req, res){
 function generateHash(password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
+
+exports.order = function(req, res){
+    ePM_VerContent.find().select({'PMNo': 1, 'xml': 1, 'ePMVerNo': 1, 'VerDate': 1, 'POXMLVerNo': 1, '_id': 0}).exec(function(err, data){
+        res.render('order', {data:data});
+    })
+}
+exports.viewXML = function(req, res){
+    var xmlName = req.params.xmlName;
+    ePM_VerContent.find({xml: xmlName}).exec(function(err, data){
+        if(err){
+            res.render('error');
+        }else{
+            var detail = JSON.parse(JSON.stringify(data[0]));            
+            var prePacks = detail.Shipments[0].PrePacks;
+            var items = detail.Shipments[0].Items;
+            
+            delete detail.Attributes;
+            delete detail.Shipments;
+            delete detail.ItemBreakdowns;
+            delete detail._id;
+            delete detail.xml;
+            delete detail.__v;
+            
+            res.render('detail', {detail: detail, prePacks: prePacks, items: items});
+        }
+    })
+}
+exports.color = function(req, res){
+    var index = req.body.index;
+    var pmno = req.body.pmno;
+    ePM_VerContent.find({'PMNo': pmno}).exec(function(err, data){
+        res.json(data[0].Shipments[0].Items[index].ColorSizes);
+    })
+}

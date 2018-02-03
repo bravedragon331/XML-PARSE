@@ -3,6 +3,7 @@ var configDB = require('../config/db');
 var chokidar = require('chokidar');
 mongoose.connect(configDB.url);
 var xml2json = require('./xml2json');
+var path = require('path');
 
 var model = require('../model/ePM_VerContent');
 var ePM_VerContent = model.ePM_VerContent;
@@ -13,20 +14,19 @@ var Item = model.Item;
 var ItemBreakDown = model.ItemBreakDown;
 var Shipment = model.Shipment;
 
-module.exports = function(path){  
-  var watcher = chokidar.watch(path, {
+module.exports = function(xmlpath){  
+  var watcher = chokidar.watch(xmlpath, {
     ignored: /[\/\\]\./, persistent: true
   });
 
   watcher
-    .on('add', async function(path) {      
-      var xmlData = await xml2json('./'+path);
-      console.log(path);
-      saveXML2DB(xmlData);
+    .on('add', async function(xmlpath) {      
+      var xmlData = await xml2json('./'+xmlpath);
+      saveXML2DB(xmlData, path.basename(xmlpath));
     })
 }
 
-function saveXML2DB(xmlData){
+function saveXML2DB(xmlData, xmlName){
   xmlData = xmlData.DOC.ePM_VerContent[0];
   var o_epm = new ePM_VerContent;
   Object.keys(xmlData).forEach(function(key,index) {
@@ -79,15 +79,15 @@ function saveXML2DB(xmlData){
       o_epm[key] = xmlData[key];
     }
   });
-  //console.log(o_epm);
-  o_epm.save(function(err, data){
+  o_epm['xml'] = xmlName;
+  ePM_VerContent.find({xml:xmlName}).remove().exec(function(err, data){
     if(err){
-      console.log('Eror');
-    }
-    if(data){
-      //console.log(data);
-    }
+      console.log('Error');
+    }else{
+      o_epm.save();
+    }    
   })
+  
 }
 
 function getPrePacks(prePacks){

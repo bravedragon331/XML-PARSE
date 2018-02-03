@@ -3,7 +3,7 @@ html
   head
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
-    title Simple Sidebar - Start Bootstrap Template
+    title Bitnami
     // Bootstrap core CSS
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', crossorigin='anonymous')
     // Data Table
@@ -21,7 +21,7 @@ html
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href='#') Brand
+          a.navbar-brand(href='/admin/monitor') L&F ePM System (INT,S.A.)
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
           ul.nav.navbar-nav.navbar-right
             li.dropdown
@@ -34,28 +34,44 @@ html
                 li
                   a(href='/admin/logout') Log out
       // /.container-fluid
-    #wrapper    
+    #wrapper.toggled
+      // Sidebar
+      #sidebar-wrapper
+        ul.sidebar-nav
+          li
+            a(href='/admin/monitor') Received XML files
+          li
+            a(href='/admin/order') Received Orders
+      // /#sidebar-wrapper
       // Page Content
       #page-content-wrapper
-        .container        
+        div
+          a#menu-toggle(href='')
+            span.glyphicon.glyphicon-menu-hamburger.d-sidebar-toggler
+        .container          
           .d-page-content
             .text-center(style='margin-top:20px; margin-bottom:20px;')
-              h2 XML File Monitor
+              h2 Received Orders
             .table-responsive
               table#userTable.table.table-striped.table-bordered(cellspacing='0', width='100%')
                 thead
                   tr
                     th.text-center No
+                    th.text-center PMNo
                     th.text-center File Name
-                    th.text-center Created At
-                    th.text-center Modified At
+                    th.text-center ePMVerNo
+                    th.text-center VerDate
+                    th.text-center POXMLVerNo
                 tbody.text-center
-                  - for (var i = 0; i < files.length; ++i) {
+                  - for (var i = 0; i < data.length; ++i) {
                     tr
-                      td #{i}
-                      td #{files[i].name}
-                      td #{files[i].ctime}
-                      td #{files[i].mtime}
+                      td #{i+1}
+                      td #{data[i].PMNo}
+                      td 
+                        a(href='/admin/order/#{data[i].xml}') #{data[i].xml}
+                      td #{data[i].ePMVerNo}
+                      td #{data[i].VerDate}
+                      td #{data[i].POXMLVerNo}
                   - }
             // Trigger the modal with a button
             button.btn.btn-info.btn-lg.d-settingModalTrigger(type='button', data-toggle='modal', data-target='#mySettingModal', style='display:none;') Open Modal
@@ -76,11 +92,12 @@ html
                         input.form-control.d-newPassword(type='password')
                       div(style='text-align:right;')
                         button.btn.btn-warning.btn-md.btn-Change(type='submit') Change
-
       // #page-content-wrapper
     // #wrapper
+
     .footer
       h4 All rights reserved. 2018
+
     // Bootstrap core JavaScript
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
@@ -88,6 +105,10 @@ html
     script(src='/dataTables/js/jquery.dataTables.min.js')
     script(src='/dataTables/js/dataTables.bootstrap4.min.js')
     script.
+      $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+      });
       $(document).ready(function(){
         $('#userTable').dataTable();
       })

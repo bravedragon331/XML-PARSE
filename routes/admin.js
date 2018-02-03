@@ -17,7 +17,9 @@ router.post('/login', passport.authenticate('local-login', {
 }));
 
 router.get('/monitor', isLoggedIn, admin.monitor);
-
+router.get('/order', isLoggedIn, admin.order);
+router.get('/order/:xmlName', isLoggedIn, admin.viewXML);
+router.post('/order/color', isLoggedIn, admin.color);
 //Change Password
 router.post('/changePassword', isLoggedIn, admin.changePassword);
 //Log out

@@ -106,6 +106,7 @@ var Shipment = mongoose.Schema({
 });
 
 var ePM_VerContent = mongoose.Schema({
+  xml: String,
   PMNo: String,
   ePMVerNo: String,
   VerDate: String,
